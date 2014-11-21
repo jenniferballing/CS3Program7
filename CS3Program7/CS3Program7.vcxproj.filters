@@ -29,5 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="prog7.txt" />
+    <Text Include="prog7b.txt" />
   </ItemGroup>
 </Project>

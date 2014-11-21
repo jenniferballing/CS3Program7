@@ -6,7 +6,7 @@ void topoFunc(GraphNode arr[], int numNodes);
 int main()
 {
 	fstream fin;
-	fin.open("prog7.txt");
+	fin.open("prog7b.txt");
 	int numNodes, numEdges, weight;
 	char firstLetter, secondLetter;
 	fin >> numNodes >> numEdges;
@@ -87,7 +87,11 @@ void topoFunc(GraphNode arr[], int numNodes)
 			while(temp.size()>0)
 			{
 				GraphNode tempNode(temp.back().getName());
-				list.push(tempNode);
+				if (arr[(temp.back().getName() - 'A')].getVisited() == false)
+				{
+					list.push(tempNode);
+					arr[(temp.back().getName() - 'A')].setVisited(true);
+				}
 				temp.pop_back();
 			}
 			list.pop();
