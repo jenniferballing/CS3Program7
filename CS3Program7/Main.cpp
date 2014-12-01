@@ -5,6 +5,7 @@
 void topoFunc(GraphNode arr[], int numNodes);
 void depthFirst(GraphNode arr[], int numNodes);
 void recursePrint(GraphNode arr[], int i);
+void dijkstras(GraphNode arr[], int numNodes);
 int main()
 {
 	//set up file i/o
@@ -56,6 +57,8 @@ int main()
 
 	//Part 2 Depth First Traversal
 	depthFirst(arr, numNodes);
+
+	//Part 3 Dijkstra's Algorithm
 
 	return 0;
 }
@@ -158,4 +161,43 @@ void recursePrint(GraphNode arr[], int i)
 		recursePrint(arr, intQ.front());
 		intQ.pop();
 	}
+}
+void dijkstras(GraphNode arr[], int numNodes)
+{
+	//Connections to N '14'
+	queue<Dependents> q;
+
+	//get the dependents of n
+	vector<Dependents> tempV = arr[13].getDepVec();
+	char lookingFor;
+	int newInt;
+	while (arr[newInt].getName != lookingFor)
+	{
+		int size = tempV.size();
+
+		//initialize min to first dependents value
+		Dependents t = tempV.back(), bestOption;
+		int min = t.getEdge();
+
+		//loop through and add to queue
+		for (int i = 0; i < size; i++)
+		{
+			Dependents tempD = tempV.back();
+
+			//find real min and find best option
+			if (tempD.getEdge() < min)
+			{
+				min = tempD.getEdge();
+				bestOption = tempD;
+			}
+
+			//add to q and remove from vector
+			q.push(tempD);
+			tempV.pop_back();
+		}
+
+		newInt = bestOption.getName()-'A';
+		tempV = arr[newInt].getDepVec();
+	}
+	cout << lookingFor << " " << "N" << 
 }
