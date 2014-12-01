@@ -5,12 +5,14 @@
 void topoFunc(GraphNode arr[], int numNodes);
 int main()
 {
+	//set up file i/o
 	fstream fin;
-	fin.open("prog7b.txt");
+	fin.open("prog7.txt");
 	int numNodes, numEdges, weight;
 	char firstLetter, secondLetter;
 	fin >> numNodes >> numEdges;
 
+	//Read info from file and store info in array
 	GraphNode arr[100];
 	while (!fin.eof())
 	{
@@ -46,7 +48,11 @@ int main()
 			arr[secondIndex].setDependent(true);
 		}		
 	}
+
+	//Part 1 Topographical Ordering
 	topoFunc(arr, numNodes);
+
+	//Part 2 Depth First Traversal
 	
 	return 0;
 }
@@ -96,8 +102,9 @@ void topoFunc(GraphNode arr[], int numNodes)
 			}
 			list.pop();
 		}
+		int size = topo.size();
 		cout << "Topological Ordering: " << endl;
-		for (int i = 0; i < topo.size(); i++)
+		for (int i = 0; i < size; i++)
 		{
 			cout << i << ": " << topo[i] << endl;
 		}
