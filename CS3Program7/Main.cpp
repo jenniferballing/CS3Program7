@@ -3,6 +3,8 @@
 #include<queue>
 
 void topoFunc(GraphNode arr[], int numNodes);
+void depthFirst(GraphNode arr[], int numNodes);
+string recursePrint(GraphNode arr[], int i);
 int main()
 {
 	//set up file i/o
@@ -53,7 +55,7 @@ int main()
 	topoFunc(arr, numNodes);
 
 	//Part 2 Depth First Traversal
-	
+	depthFirst(arr, numNodes);
 	return 0;
 }
 
@@ -108,5 +110,32 @@ void topoFunc(GraphNode arr[], int numNodes)
 		{
 			cout << i << ": " << topo[i] << endl;
 		}
+	}
+}
+void depthFirst(GraphNode arr[], int numNodes)
+{
+	//Find non dependent nodes and store in array
+	GraphNode noDepArr[50];
+	int index = 0;
+	for (int i = 0; i < numNodes; i++)
+	{
+		if (arr[i].getDependent() == false)
+		{
+			noDepArr[index] = arr[i];
+			recursePrint(arr, i);
+			index++;
+		}
+	}
+}
+string recursePrint(GraphNode arr[], int i)
+{
+	//Check for visited flag and check for end of the line
+	vector <Dependents> temp = arr[i].getDepVec();
+	int size = temp.size();
+	if (arr[i].getVisited() == true) return "";
+	else
+	{
+		arr[i].setVisited(true);
+		return arr[i].getName() + " " + recursePrint( );
 	}
 }
