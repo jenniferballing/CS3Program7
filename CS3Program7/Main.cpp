@@ -9,7 +9,7 @@ int main()
 {
 	//set up file i/o
 	fstream fin;
-	fin.open("prog7.txt");
+	fin.open("prog7b.txt");
 	int numNodes, numEdges, weight;
 	char firstLetter, secondLetter;
 	fin >> numNodes >> numEdges;
@@ -56,6 +56,7 @@ int main()
 
 	//Part 2 Depth First Traversal
 	depthFirst(arr, numNodes);
+
 	return 0;
 }
 
@@ -145,17 +146,16 @@ void recursePrint(GraphNode arr[], int i)
 	//store indices of all dependents
 	vector<Dependents> tempDep = arr[i].getDepVec();
 	int size = tempDep.size();
-	int intArr[50];
+	queue <int> intQ;
 	for (int i = 0; i < size; i++)
 	{
-		intArr[i] = tempDep[i].getName() - 'A';
+		intQ.push(tempDep[i].getName() - 'A');
 	}
 
-	int index = 0;
 	//NULL= 0 need to fix array to be vector//
-	while (intArr[index] != NULL)
+	while (intQ.size() > 0)
 	{
-		recursePrint(arr, intArr[index]);
-		index++;
+		recursePrint(arr, intQ.front());
+		intQ.pop();
 	}
 }
