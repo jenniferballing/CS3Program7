@@ -4,7 +4,7 @@
 
 void topoFunc(GraphNode arr[], int numNodes);
 void depthFirst(GraphNode arr[], int numNodes);
-string recursePrint(GraphNode arr[], int i);
+void recursePrint(GraphNode arr[], int i);
 int main()
 {
 	//set up file i/o
@@ -114,6 +114,12 @@ void topoFunc(GraphNode arr[], int numNodes)
 }
 void depthFirst(GraphNode arr[], int numNodes)
 {
+	//reset all visited flags to false
+	for (int k = 0; k < numNodes; k++)
+	{
+		arr[k].setVisited(false);
+	}
+
 	//Find non dependent nodes and store in array
 	GraphNode noDepArr[50];
 	int index = 0;
@@ -127,15 +133,29 @@ void depthFirst(GraphNode arr[], int numNodes)
 		}
 	}
 }
-string recursePrint(GraphNode arr[], int i)
+void recursePrint(GraphNode arr[], int i)
 {
-	//Check for visited flag and check for end of the line
-	vector <Dependents> temp = arr[i].getDepVec();
-	int size = temp.size();
-	if (arr[i].getVisited() == true) return "";
-	else
+	//Check visited flag
+	if (arr[i].getVisited() == true) return;
+
+	//set visited flag and create dependents list
+	arr[i].setVisited(true);
+	cout << arr[i].getName() << " " << endl;
+
+	//store indices of all dependents
+	vector<Dependents> tempDep = arr[i].getDepVec();
+	int size = tempDep.size();
+	int intArr[50];
+	for (int i = 0; i < size; i++)
 	{
-		arr[i].setVisited(true);
-		return arr[i].getName() + " " + recursePrint( );
+		intArr[i] = tempDep[i].getName() - 'A';
+	}
+
+	int index = 0;
+	//NULL= 0 need to fix array to be vector//
+	while (intArr[index] != NULL)
+	{
+		recursePrint(arr, intArr[index]);
+		index++;
 	}
 }
