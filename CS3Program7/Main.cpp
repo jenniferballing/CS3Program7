@@ -13,7 +13,7 @@ int main()
 {
 	//set up file i/o
 	fstream fin;
-	fin.open("prog7b.txt");
+	fin.open("prog7.txt");
 	int numNodes, numEdges, weight;
 	char firstLetter, secondLetter;
 	fin >> numNodes >> numEdges;
@@ -122,6 +122,7 @@ void topoFunc(GraphNode arr[], int numNodes)
 }
 void depthFirst(GraphNode arr[], int numNodes)
 {
+	cout << "Depth first traversal: " << endl;
 	//reset all visited flags to false
 	for (int k = 0; k < numNodes; k++)
 	{
@@ -168,6 +169,7 @@ void recursePrint(GraphNode arr[], int i)
 }
 void dijkstras(GraphNode arr[], int numNodes)
 {
+	cout << "All Nodes, Shortest Path, using Dijkstra's Algorithm: " << endl;
 	//make q
 	queue<Dependents> q;	
 	
@@ -183,11 +185,13 @@ void dijkstras(GraphNode arr[], int numNodes)
 		parent.setPath("N");
 		
 		char desiredChar = charNum + 'A';
+
 		//print char path
 		cout << "N:";
 		cout << desiredChar;
 		cout << " path is ";
 		bool found = false;
+		int totalCost = 0;
 		while (!found)
 		{		
 			//loop through all letters and add any that have desired as a dependent to tempV before sort.
@@ -198,14 +202,28 @@ void dijkstras(GraphNode arr[], int numNodes)
 				int nSize = nDep.size();
 				for (int i = 0; i < nSize; i++)
 				{
-					if (nDep.front().getName() == parent.getName())
+					if (nDep.back().getName() == parent.getName())
 					{
-						Dependents newDep(arr[num].getName(), nDep.front().getEdge());
+						
+						Dependents newDep(arr[num].getName(), nDep.back().getEdge());
 						tempV.push_back(newDep);
+						nDep.pop_back();
 					}
 				}
 				num++;
 			}
+
+			//increase the edge weight of each dependent
+			int vSize = tempV.size();
+			vector <Dependents> vec;
+			for (int i = 0; i < vSize; i++)
+			{
+				Dependents node = tempV.back();
+				node.setEdge(node.getEdge() + parent.getEdge());
+				vec.push_back(node);
+				tempV.pop_back();
+			} 
+			tempV = vec;
 
 			//sort vector (backwards)
 			sort(tempV.begin(), tempV.end(), mySort);
@@ -215,6 +233,7 @@ void dijkstras(GraphNode arr[], int numNodes)
 			for (int i = 0; i < size; i++)
 			{
 				char name = tempV.back().getName();
+				int cost = tempV.back().getEdge() + parent.getEdge();
 				tempV.back().setPath(parent.getPath() + "->"+ name);
 				q.push(tempV.back());
 				tempV.pop_back();
@@ -227,7 +246,7 @@ void dijkstras(GraphNode arr[], int numNodes)
 			//check for desired char
 			if (front.getName() == desiredChar)
 			{
-				cout << front.getPath() << endl;
+				cout << front.getPath() << " Total Cost " <<front.getEdge()<<endl;
 				found = true;
 			}
 			parent = front;
