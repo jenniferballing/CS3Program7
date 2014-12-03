@@ -9,6 +9,8 @@ void recursePrint(GraphNode arr[], int i);
 void dijkstras(GraphNode arr[], int numNodes);
 bool mySort(Dependents a, Dependents b); 
 void clearQ(queue<Dependents> &q);
+void prims(GraphNode arr[], int numNodes);
+
 int main()
 {
 	//set up file i/o
@@ -63,6 +65,9 @@ int main()
 
 	//Part 3 Dijkstra's Algorithm
 	dijkstras(arr, numNodes);
+
+	//Part 4 Prim's Algorithm
+	prims(arr, numNodes);
 
 	return 0;
 }
@@ -255,6 +260,92 @@ void dijkstras(GraphNode arr[], int numNodes)
 		}
 		charNum++;
 	}
+}
+void prims(GraphNode arr[], int numNodes)
+{
+	//make q
+	queue<Dependents> q;
+
+
+	//loop through each letter
+	int charNum = 0, total = 0;
+	Dependents front;
+	while (charNum < numNodes - 1)
+	{
+		clearQ(q);
+		//store dependents 	//get the dependents of n
+		vector<Dependents> tempV = arr[13].getDepVec();
+		Dependents parent('N', 0);
+		parent.setPath("N");
+
+		char desiredChar = charNum + 'A';
+		bool found = false;
+		int totalCost = 0;
+		while (!found)
+		{
+			//loop through all letters and add any that have desired as a dependent to tempV before sort.
+			int num = 0;
+			while (num<numNodes)
+			{
+				vector<Dependents> nDep = arr[num].getDepVec();
+				int nSize = nDep.size();
+				for (int i = 0; i < nSize; i++)
+				{
+					if (nDep.back().getName() == parent.getName())
+					{
+
+						Dependents newDep(arr[num].getName(), nDep.back().getEdge());
+						tempV.push_back(newDep);
+						nDep.pop_back();
+					}
+				}
+				num++;
+			}
+
+			//increase the edge weight of each dependent
+			int vSize = tempV.size();
+			vector <Dependents> vec;
+			for (int i = 0; i < vSize; i++)
+			{
+				Dependents node = tempV.back();
+				node.setEdge(node.getEdge() + parent.getEdge());
+				vec.push_back(node);
+				tempV.pop_back();
+			}
+			tempV = vec;
+
+			//sort vector (backwards)
+			sort(tempV.begin(), tempV.end(), mySort);
+
+			//put dependents into the queue according to edgeweight
+			int size = tempV.size();
+			for (int i = 0; i < size; i++)
+			{
+				char name = tempV.back().getName();
+				int cost = tempV.back().getEdge() + parent.getEdge();
+				tempV.back().setPath(parent.getPath() + "->" + name);
+				q.push(tempV.back());
+				tempV.pop_back();
+			}
+
+			//pull the first one off and enqueu its dependents with new edgewights in order of new edgeweight
+			front = q.front();
+			q.pop();
+
+			//check for desired char
+			if (front.getName() == desiredChar)
+			{
+				total += front.getEdge();
+				found = true;
+			}
+			parent = front;
+			int newIndex = front.getName() - 'A';
+			tempV = arr[newIndex].getDepVec();
+		}
+		charNum++;
+	}
+	cout << "Prims Algorithm: Min Spanning Tree: " << front.getEdge() << endl;
+	
 }
 
 bool mySort(Dependents a, Dependents b) 
