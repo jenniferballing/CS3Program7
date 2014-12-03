@@ -10,13 +10,16 @@ class Dependents
 {
 	char name;
 	int edgeWeight;
+	string path;
 public:
 	Dependents();
 	Dependents(char, int);
 	char getName();
 	int getEdge();
+	string getPath();
 	void setName(char);
 	void setEdge(int);
+	void setPath(string);
 };
 class GraphNode
 {

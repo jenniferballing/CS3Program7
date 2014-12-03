@@ -1,11 +1,14 @@
 #include "GraphNode.h"
 #include<fstream>
 #include<queue>
+#include <algorithm>
 
 void topoFunc(GraphNode arr[], int numNodes);
 void depthFirst(GraphNode arr[], int numNodes);
 void recursePrint(GraphNode arr[], int i);
 void dijkstras(GraphNode arr[], int numNodes);
+bool mySort(Dependents a, Dependents b); 
+void clearQ(queue<Dependents> &q);
 int main()
 {
 	//set up file i/o
@@ -59,6 +62,7 @@ int main()
 	depthFirst(arr, numNodes);
 
 	//Part 3 Dijkstra's Algorithm
+	dijkstras(arr, numNodes);
 
 	return 0;
 }
@@ -164,40 +168,83 @@ void recursePrint(GraphNode arr[], int i)
 }
 void dijkstras(GraphNode arr[], int numNodes)
 {
-	//Connections to N '14'
-	queue<Dependents> q;
+	//make q
+	queue<Dependents> q;	
+	
 
-	//get the dependents of n
-	vector<Dependents> tempV = arr[13].getDepVec();
-	char lookingFor;
-	int newInt;
-	while (arr[newInt].getName != lookingFor)
+	//loop through each letter
+	int charNum = 0;
+	while (charNum < numNodes-1)
 	{
-		int size = tempV.size();
-
-		//initialize min to first dependents value
-		Dependents t = tempV.back(), bestOption;
-		int min = t.getEdge();
-
-		//loop through and add to queue
-		for (int i = 0; i < size; i++)
-		{
-			Dependents tempD = tempV.back();
-
-			//find real min and find best option
-			if (tempD.getEdge() < min)
-			{
-				min = tempD.getEdge();
-				bestOption = tempD;
+		clearQ(q);
+		//store dependents 	//get the dependents of n
+		vector<Dependents> tempV = arr[13].getDepVec();
+		Dependents parent('N', 0);
+		parent.setPath("N");
+		
+		char desiredChar = charNum + 'A';
+		//print char path
+		cout << "N:";
+		cout << desiredChar;
+		cout << " path is ";
+		bool found = false;
+		while (!found)
+		{		
+			//loop through all letters and add any that have desired as a dependent to tempV before sort.
+			int num = 0;
+			while (num<numNodes)
+			{				
+				vector<Dependents> nDep = arr[num].getDepVec();
+				int nSize = nDep.size();
+				for (int i = 0; i < nSize; i++)
+				{
+					if (nDep.front().getName() == parent.getName())
+					{
+						Dependents newDep(arr[num].getName(), nDep.front().getEdge());
+						tempV.push_back(newDep);
+					}
+				}
+				num++;
 			}
 
-			//add to q and remove from vector
-			q.push(tempD);
-			tempV.pop_back();
-		}
+			//sort vector (backwards)
+			sort(tempV.begin(), tempV.end(), mySort);
 
-		newInt = bestOption.getName()-'A';
-		tempV = arr[newInt].getDepVec();
+			//put dependents into the queue according to edgeweight
+			int size = tempV.size();
+			for (int i = 0; i < size; i++)
+			{
+				char name = tempV.back().getName();
+				tempV.back().setPath(parent.getPath() + "->"+ name);
+				q.push(tempV.back());
+				tempV.pop_back();
+			}
+
+			//pull the first one off and enqueu its dependents with new edgewights in order of new edgeweight
+			Dependents front = q.front();
+			q.pop();
+
+			//check for desired char
+			if (front.getName() == desiredChar)
+			{
+				cout << front.getPath() << endl;
+				found = true;
+			}
+			parent = front;
+			int newIndex = front.getName() - 'A';
+			tempV = arr[newIndex].getDepVec();
+		}
+		charNum++;
 	}
-	cout << lookingFor << " " << "N" << 
+}
+
+bool mySort(Dependents a, Dependents b) 
+{
+	return (a.getEdge() > b.getEdge());
+}
+
+void clearQ(queue<Dependents> &q)
+{
+	queue <Dependents> empty;
+	swap(q, empty);
 }

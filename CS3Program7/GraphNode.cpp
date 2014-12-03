@@ -19,6 +19,10 @@ int Dependents::getEdge()
 {
 	return edgeWeight;
 }
+string Dependents::getPath()
+{
+	return path;
+}
 void Dependents::setName(char n)
 {
 	name = n;
@@ -26,6 +30,10 @@ void Dependents::setName(char n)
 void Dependents::setEdge(int e)
 {
 	edgeWeight = e;
+}
+void Dependents::setPath(string s)
+{
+	path = s;
 }
 
 GraphNode::GraphNode()
